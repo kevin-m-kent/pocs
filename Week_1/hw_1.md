@@ -6,12 +6,12 @@ Week 1 Homework
 We are looking to estimate the beta and c coefficients for the
 exponential model:
 
-![{M}\_{WorldRecord} = c{M}\_{WeightClass}^{\gamma}](https://latex.codecogs.com/png.image?%5Cbg_black&space;%7BM%7D_%7BWorldRecord%7D%20%3D%20c%7BM%7D_%7BWeightClass%7D%5E%7B%5Cgamma%7D "{M}_{WorldRecord} = c{M}_{WeightClass}^{\gamma}")
+![{M}\_{WorldRecord} = c{M}\_{WeightClass}^{\gamma}](%7BM%7D_%7BWorldRecord%7D%20%3D%20c%7BM%7D_%7BWeightClass%7D%5E%7B%5Cgamma%7D "{M}_{WorldRecord} = c{M}_{WeightClass}^{\gamma}")
 
 Taking the log of both sides, we end up with a linear version of this
 model:
 
-![log({M}\_{WorldRecord}) = log(c) + {\gamma}log({M}\_{WeightClass})](https://latex.codecogs.com/png.image?%5Cbg_black&space;log%28%7BM%7D_%7BWorldRecord%7D%29%20%3D%20log%28c%29%20%2B%20%7B%5Cgamma%7Dlog%28%7BM%7D_%7BWeightClass%7D%29 "log({M}_{WorldRecord}) = log(c) + {\gamma}log({M}_{WeightClass})")
+![log({M}\_{WorldRecord}) = log(c) + {\gamma}log({M}\_{WeightClass})](log%28%7BM%7D_%7BWorldRecord%7D%29%20%3D%20log%28c%29%20%2B%20%7B%5Cgamma%7Dlog%28%7BM%7D_%7BWeightClass%7D%29 "log({M}_{WorldRecord}) = log(c) + {\gamma}log({M}_{WeightClass})")
 
 We can estimate this using linear regression with the log-log
 transformation by taking the log of weight class and world record and

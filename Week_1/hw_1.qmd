@@ -4,7 +4,6 @@ format:
    gfm:
      html-math-method: 
        method: webtex
-       url: https://latex.codecogs.com/png.image?%5Cbg_black&space;
 ---
 
 ## General Approach
