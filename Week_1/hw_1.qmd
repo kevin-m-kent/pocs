@@ -1,8 +1,10 @@
 ---
 title: "Week 1 Homework"
 format:
-  gfm:
-    html-math-method: webtex
+   gfm:
+     html-math-method: 
+       method: webtex
+       url: https://latex.codecogs.com/png.image?%5Cbg_black&space;
 ---
 
 ## General Approach
