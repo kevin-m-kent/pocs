@@ -3,25 +3,16 @@ title: "Week 1 Homework"
 format:
   gfm:
     html-math-method: webtex
-editor: visual
 ---
 
 ## General Approach
 
 We are looking to estimate the beta and c coefficients for the exponential model:
 
-$$
-
-{M}_{WorldRecord} = c{M}_{WeightClass}^{\gamma}
-
-$$
+$${M}_{WorldRecord} = c{M}_{WeightClass}^{\gamma}$$
 Taking the log of both sides, we end up with a linear version of this model:
 
-$$
-
-log({M}_{WorldRecord}) = log(c) + {\gamma}log({M}_{WeightClass})
-
-$$
+$$log({M}_{WorldRecord}) = log(c) + {\gamma}log({M}_{WeightClass})$$
 We can estimate this using linear regression with the log-log transformation by
 taking the log of weight class and world record and estimating c and gamma.
 
