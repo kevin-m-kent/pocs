@@ -1,6 +1,28 @@
 Week 1 Homework
 ================
 
+## General Approach
+
+We are looking to estimate the beta and c coefficients for the
+exponential model:
+
+\$\$
+
+{M}*{WorldRecord} = c{M}*{WeightClass}^{}
+
+\$\$ Taking the log of both sides, we end up with a linear version of
+this model:
+
+\$\$
+
+log({M}*{WorldRecord}) = log(c) + {}log({M}*{WeightClass})
+
+\$\$ We can estimate this using linear regression with the log-log
+transformation by taking the log of weight class and world record and
+estimating c and gamma.
+
+First, we need to clean some data.
+
 ## Reading and Cleaning Data
 
 After downloading the data from Wikipedia, I did some cleaning to get it
@@ -55,7 +77,7 @@ coeffs <- nested_mods |>
   select(Type:estimate) |>
   pivot_wider(names_from = "term", values_from = "estimate") |>
   rename(c = 3, beta = 4) |>
-  mutate(c = 10^c)
+  mutate(c = 10^c) ## we need to exponentiate because the coefficient from the model is on the log scale
 
 coeffs |>
   knitr::kable()
