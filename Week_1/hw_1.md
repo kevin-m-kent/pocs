@@ -48,13 +48,6 @@ cleaned_data <- raw_data |> clean_df()
 
 Let’s see what the fits look like:
 
-``` r
-cleaned_data |>
-  ggplot(aes(class, Record, col = Type)) + geom_point() + geom_smooth(method = "lm") + facet_wrap(Event ~ ., scales = "free", ncol =1)
-```
-
-    `geom_smooth()` using formula 'y ~ x'
-
 ![](hw_1_files/figure-gfm/unnamed-chunk-2-1.png)
 
 Let’s do some estimates, one linear model for each sex and event

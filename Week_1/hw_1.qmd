@@ -50,8 +50,13 @@ cleaned_data <- raw_data |> clean_df()
 Let's see what the fits look like:
  
 ```{r}
+#| echo: false
+#| warning: false
+#| message: false
 cleaned_data |>
-  ggplot(aes(class, Record, col = Type)) + geom_point() + geom_smooth(method = "lm") + facet_wrap(Event ~ ., scales = "free", ncol =1)
+  ggplot(aes(class, Record, col = Type)) + geom_point() + geom_smooth(method = "lm") + 
+  facet_wrap(Event ~ ., scales = "free", ncol =1) + theme_minimal() +
+  labs(title = "Linear Fits for Class vs Record", subtitle = "Fits for each Event")
 ```
 
 Let's do some estimates, one linear model for each sex and event combination:
