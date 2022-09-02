@@ -1,6 +1,8 @@
 ---
 title: "Week 1 Homework"
-format: gfm
+format:
+  gfm:
+    html-math-method: webtex
 editor: visual
 ---
 
