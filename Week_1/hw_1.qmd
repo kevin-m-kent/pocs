@@ -32,7 +32,6 @@ First, we need to clean some data.
 After downloading the data from Wikipedia, I did some cleaning to get it in the 
 proper format.
 
-
 ```{r}
 #| output: false
 library(tidyverse)
