@@ -2,7 +2,7 @@
 title: "Week 1 Homework"
 format:
   gfm:
-    html-math-method: mathml
+    html-math-method: webtex
 editor: visual
 ---
 
