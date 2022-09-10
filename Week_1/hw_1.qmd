@@ -3,6 +3,9 @@ title: "Week 1 Homework"
 format:
    gfm:
      html-math-method: webtex
+execute: 
+  message: false
+  warning: false
 ---
 
 ## General Approach
@@ -24,7 +27,6 @@ After downloading the data from Wikipedia, I did some cleaning to get it in the
 proper format.
 
 ```{r}
-#| output: false
 library(tidyverse)
 
 raw_data <- read_csv(here::here("Week_1", "hw_1_data.csv")) |>

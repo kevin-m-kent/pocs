@@ -1,0 +1,29 @@
+#+title: Week 2 Lecture Notes
+#+author: Kevin Kent
+
+* Random Notes
+
+Less time between success over time, effects of learning. Increasing returns in a sense!
+
+An interesting link about this topic: https://ark-invest.com/wrights-law/
+
+** Reguarlization of verbs
+
+The more common a word is in language, the less of a chance it will get regularized. 
+
+** Network Differentiation
+
+\begin{equation}
+C \approx  N^{1/d}  
+\end{equation} 
+
+Where C is the amount of differentiation, N is the network size, d is the amount of combination. 
+
+** Power Law Distributons
+
+What can produce it?
+
+- Rich get richer
+- Optimization 
+
+
