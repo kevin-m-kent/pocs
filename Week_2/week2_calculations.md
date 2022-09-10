@@ -1,27 +1,20 @@
----
-title: "Week 2 Homework"
-format:
-   gfm:
-     html-math-method: webtex
-editor: visual
-execute: 
-  message: false
-  warning: false
----
+Week 2 Homework
+================
 
 # Rowing Records by Weight
 
 Our goal is to verify if this relationship still holds:
 
-$$V_{max} \propto N^{1/9} $$
+![V\_{max} \propto N^{1/9}](https://latex.codecogs.com/svg.latex?V_%7Bmax%7D%20%5Cpropto%20N%5E%7B1%2F9%7D "V_{max} \propto N^{1/9}")
 
 ## Clean Data
 
-Data is from a wikipedia entry: [List of World Best Times in Rowing](https://en.wikipedia.org/wiki/List_of_world_best_times_in_rowing)
+Data is from a wikipedia entry: [List of World Best Times in
+Rowing](https://en.wikipedia.org/wiki/List_of_world_best_times_in_rowing)
 
-Let's import and clean the data
+Let’s import and clean the data
 
-```{r}
+``` r
 library(tidyverse)
 library(lubridate)
 
@@ -38,40 +31,41 @@ clean_data <- raw_data |>
   mutate(time_min = as.numeric(seconds(Time)/3600)) |> 
       mutate(km_h = 2*60/time_min) # let's use the same units 
                                         # as the plot in the assignment
-  
-  
 ```
+
 ## Visualize Relationships
 
-Let's see what rowers plotted against time looks like on a log-log plot.
+Let’s see what rowers plotted against time looks like on a log-log plot.
 
-```{r}
+``` r
 clean_data |> 
   ggplot(aes(num_rowers, km_h, col = Sex)) + geom_point() + geom_smooth(method = "lm") + 
   scale_x_log10() + scale_y_log10() + theme_light() + 
   labs(title = "World Records for Rowing, Men and Women", subtitle = "Pulled from wikipedia", caption = paste0("As of ", Sys.Date()))
+```
 
+![](week2_calculations_files/figure-gfm/unnamed-chunk-2-1.png)
+
+``` r
 ggsave(here::here(week, "Output", "men_women_fit_rowing.png"))
 ```
+
 ## Model
 
-Let's fit a linear model on the log-log data:
+Let’s fit a linear model on the log-log data:
 
-```{r}
-
+``` r
 models <- clean_data |> 
   group_nest(Sex) |> 
   mutate(coeffs = map(data, ~ lm(log10(km_h) ~ log10(num_rowers), .) |> broom::tidy())) |> 
   ungroup() |> 
   select(Sex, coeffs) |> 
   unnest(coeffs)
-
 ```
 
 ## Explore Model Results
 
-```{r}
-
+``` r
 models |>
   select(Sex:estimate) |>
   pivot_wider(names_from = "term", values_from = "estimate") |>
@@ -80,11 +74,14 @@ models |>
   knitr::kable()
 ```
 
+| Sex   |        c |      beta |
+|:------|---------:|----------:|
+| Men   | 18.10698 | 0.1021888 |
+| Women | 16.42125 | 0.1108222 |
+
 ## Interpretation
 
-```{r}
-#| output: false
-
+``` r
 mod_clean <- models |>
   select(Sex:estimate) |>
   pivot_wider(names_from = "term", values_from = "estimate") |>
@@ -95,6 +92,5 @@ coeff_sex <- mod_clean |>
   pull(beta, Sex)
 ```
 
-
-This gives us beta coeff of `r coeff_sex[["Men"]]` for men and `r coeff_sex[["Women"]]` 
-for women. This is fairly close to 1/9 (`r 1/9`).
+This gives us beta coeff of 0.1021888 for men and 0.1108222 for women.
+This is fairly close to 1/9 (0.1111111).
