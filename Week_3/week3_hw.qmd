@@ -1,0 +1,47 @@
+---
+title: "Week 3 Homework"
+format:
+   gfm:
+     html-math-method: webtex
+editor: visual
+---
+
+# Google Data - Word Frequencies
+
+## Read in Data
+
+```{r}
+
+library(tidyverse)
+
+week <- "Week_3"
+
+raw_freq_data <- read_table(here::here(week, "Data", "vocab_cs_mod.txt"), col_names = c("k", "Nk"))
+
+raw_freq_data |> 
+  ggplot(aes(k, Nk)) + geom_point(alpha = .20) +
+  labs(title =  "Frequency Distribution with no Transformation") + theme_light()
+
+```
+
+```{r}
+raw_freq_data |> 
+  ggplot(aes(k, Nk))  + geom_point(alpha = .30) + scale_x_log10(label = scales::comma_format()) + 
+  scale_y_log10() + labs(title =  "Frequency Distribution with Log-Log Transformation") + theme_light()
+```
+## Linear Regression
+
+```{r}
+counted_data <- raw_freq_data |>
+    filter(k < 1e4) 
+
+linear_mod <- lm(log10(Nk) ~ log10(k), data = counted_data)
+
+summary(linear_mod)
+```
+```{r}
+counted_data |> 
+ uncount(Nk) |> 
+ summarise(mean_n = mean(k), sd_n = sd(k))
+```
+
