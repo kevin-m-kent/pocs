@@ -50,8 +50,6 @@ clean_data |>
   ggplot(aes(num_rowers, km_h, col = Sex)) + geom_point() + geom_smooth(method = "lm") + 
   scale_x_log10() + scale_y_log10() + theme_light() + 
   labs(title = "World Records for Rowing, Men and Women", subtitle = "Pulled from wikipedia", caption = paste0("As of ", Sys.Date()))
-
-ggsave(here::here(week, "Output", "men_women_fit_rowing.png"))
 ```
 ## Model
 
@@ -98,3 +96,30 @@ coeff_sex <- mod_clean |>
 
 This gives us beta coeff of `r coeff_sex[["Men"]]` for men and `r coeff_sex[["Women"]]` 
 for women. This is fairly close to 1/9 (`r 1/9`).
+
+# Orbit of Planets
+
+Data is from a website: [windows2universe](https://www.windows2universe.org/our_solar_system/planets_orbits_table.html).
+
+From this plot they seem pretty linear on the log-log scale (after Period is squared and Radius is cubed).
+
+```{r}
+raw_planet_data <- read_csv(here::here(week, "Data", "planet_orbit.csv")) |> 
+  mutate(Period = Period^2, Radius = Radius^3) 
+
+raw_planet_data |> 
+  ggplot(aes(Period, Radius)) + geom_point() + scale_x_log10() + scale_y_log10() +
+  labs(title = "Period^2 Plotted Against Radius^3, Log-Log Scale (Base 10)") +
+  theme_light()
+
+```
+
+```{r}
+lm(log10(Period) ~ log10(Radius), data = raw_planet_data)
+```
+This would be the exponent in the original form, where 
+
+$r \propto T^{2/3}$
+
+Since 2/3 = ~.667, .48 is relatively close and might be closer if you remove the
+outlier on the far left of the plot (Mercury).
