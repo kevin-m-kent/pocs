@@ -1,0 +1,50 @@
+---
+title: "Week 4 Homework"
+format: html
+editor: visual
+execute: 
+  message: false
+  warning: false
+---
+
+## CCDF Exponents
+
+```{r}
+#| layout-ncol: 2
+library(tidyverse)
+
+google_data_raw <- read_table(here::here("Week_3", "Data", "vocab_cs_mod.txt"),
+                              col_names = c("k", "Nk"))
+
+data_cprob <- google_data_raw |> 
+  arrange(desc(k)) |> 
+  mutate(total = sum(Nk)) |> 
+  mutate(prob = Nk/total) |> 
+  mutate(c_prob = cumsum(prob)) 
+
+data_cprob |> 
+  ggplot(aes(log10(k), log10(c_prob))) + geom_point()
+
+lm(log10(c_prob) ~ log10(k), data = data_cprob) |> 
+  broom::tidy() |>
+  select(term, estimate, std.error) |> 
+  knitr::kable()
+
+
+```
+## CCDF Exponents
+
+```{r}
+raw_wordfreq <- read_table(here::here("Week_3", "Data", "rawwwordfreqs.txt"),
+                              col_names = c("k"))
+
+wordfreq_rank <- raw_wordfreq |> 
+  mutate(rank = rank(-k))
+
+wordfreq_rank |> 
+  slice_sample(n = 100000) |> 
+  ggplot(aes(log10(rank), log10(k))) + geom_point()
+```
+## Baby Name Frequencies
+
+
