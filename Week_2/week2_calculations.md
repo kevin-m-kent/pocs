@@ -46,10 +46,6 @@ clean_data |>
 
 ![](week2_calculations_files/figure-gfm/unnamed-chunk-2-1.png)
 
-``` r
-ggsave(here::here(week, "Output", "men_women_fit_rowing.png"))
-```
-
 ## Model
 
 Let’s fit a linear model on the log-log data:
@@ -94,3 +90,42 @@ coeff_sex <- mod_clean |>
 
 This gives us beta coeff of 0.1021888 for men and 0.1108222 for women.
 This is fairly close to 1/9 (0.1111111).
+
+# Orbit of Planets
+
+Data is from a website:
+[windows2universe](https://www.windows2universe.org/our_solar_system/planets_orbits_table.html).
+
+From this plot they seem pretty linear on the log-log scale (after
+Period is squared and Radius is cubed).
+
+``` r
+raw_planet_data <- read_csv(here::here(week, "Data", "planet_orbit.csv")) |> 
+  mutate(Period = Period^2, Radius = Radius^3) 
+
+raw_planet_data |> 
+  ggplot(aes(Period, Radius)) + geom_point() + scale_x_log10() + scale_y_log10() +
+  labs(title = "Period^2 Plotted Against Radius^3, Log-Log Scale (Base 10)") +
+  theme_light()
+```
+
+![](week2_calculations_files/figure-gfm/unnamed-chunk-6-1.png)
+
+``` r
+lm(log10(Period) ~ log10(Radius), data = raw_planet_data)
+```
+
+
+    Call:
+    lm(formula = log10(Period) ~ log10(Radius), data = raw_planet_data)
+
+    Coefficients:
+      (Intercept)  log10(Radius)  
+          -0.1738         0.4830  
+
+This would be the exponent in the original form, where
+
+![r \propto T^{2/3}](https://latex.codecogs.com/svg.latex?r%20%5Cpropto%20T%5E%7B2%2F3%7D "r \propto T^{2/3}")
+
+Since 2/3 = \~.667, .48 is relatively close and might be closer if you
+remove the outlier on the far left of the plot (Mercury).

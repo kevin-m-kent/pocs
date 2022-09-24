@@ -1,18 +1,9 @@
----
-title: "Week 4 Homework"
-format:
-   gfm:
-     html-math-method: webtex
-editor: visual
-execute: 
-  message: false
-  warning: false
----
+Week 4 Homework
+================
 
 ## CCDF Exponents
 
-```{r}
-#| layout-ncol: 2
+``` r
 library(tidyverse)
 
 google_data_raw <- read_table(here::here("Week_3", "Data", "vocab_cs_mod.txt"),
@@ -30,22 +21,29 @@ data_cprob |>
   labs(title = "Complementary Cumulatuve Distribution Function - Google Word Frequencies",
        x = "K (log10)", y = "Nk > k (log10)") +
   theme_light()
+```
 
+![](homework_week4_files/figure-gfm/unnamed-chunk-1-1.png)
+
+``` r
 ggsave(here::here("Week_4", "Plots", "ccdf_google_word.png"))
 
 lm(log10(c_count) ~ log10(k), data = data_cprob) |> 
   broom::tidy() |>
   select(term, estimate, std.error) |> 
   knitr::kable()
-
-
 ```
+
+| term        |   estimate | std.error |
+|:------------|-----------:|----------:|
+| (Intercept) |  8.6423975 | 0.0005197 |
+| log10(k)    | -0.6809884 | 0.0000974 |
 
 scaling regions
 
 log10(k) 0 -\> 7 7 -\> 9
 
-```{r}
+``` r
 data_scaling_regions <- data_cprob |> 
   mutate(region = case_when(log10(k) <= 7 ~ "region_one",
                             log10(k) <= 9 ~ "region_two", 
@@ -65,11 +63,18 @@ data_scaling_fits |>
   mutate(upper = estimate + two_sds, lower = estimate - two_sds)
 ```
 
+    # A tibble: 2 × 9
+      region     term     estimate std.error stati…¹ p.value two_sds   upper   lower
+      <chr>      <chr>       <dbl>     <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+    1 region_one log10(k)  -0.339  0.0000406 -16274.       0 7.96e-5 -0.339  -0.340 
+    2 region_two log10(k)   0.0153 0.000918   -1105.       0 1.80e-3  0.0171  0.0135
+    # … with abbreviated variable name ¹​statistic
+
 ## CCDF Exponents
 
 Plot
 
-```{r}
+``` r
 raw_wordfreq <- read_table(here::here("Week_3", "Data", "rawwwordfreqs.txt"),
                               col_names = c("k"))
 
@@ -82,14 +87,17 @@ wordfreq_rank |>
   labs(title = "Rank-Size Plot for Google Raw Word Frequencies",
        x = "Rank (log10)", y = "Raw Frequency (log10)") + 
   theme_light()
+```
 
+![](homework_week4_files/figure-gfm/unnamed-chunk-3-1.png)
+
+``` r
 ggsave(here::here("Week_4", "Plots", "rank_size_raw_google.png"))
-
 ```
 
 Fits
 
-```{r}
+``` r
 wordfreq_rank_regions <- wordfreq_rank |> 
     mutate(region = case_when(log10(rank) <= 4 ~ "region_one",
                            TRUE ~ "region_two")) |> 
@@ -107,10 +115,16 @@ word_freq_fits |>
   mutate(upper = estimate + two_sds, lower = estimate - two_sds)
 ```
 
+    # A tibble: 2 × 9
+      region     term        estimate  std.error stati…¹ p.value two_sds upper lower
+      <chr>      <chr>          <dbl>      <dbl>   <dbl>   <dbl>   <dbl> <dbl> <dbl>
+    1 region_one log10(rank)    -1.02 0.000805   -1.26e3       0 1.58e-3 -1.02 -1.02
+    2 region_two log10(rank)    -1.41 0.00000708 -2.00e5       0 1.39e-5 -1.41 -1.41
+    # … with abbreviated variable name ¹​statistic
+
 ## Baby Name Frequencies
 
-```{r}
-#| layout-ncol: 2
+``` r
 library(xtable)
 
 year <- c("1952", "2002")
@@ -210,12 +224,62 @@ zipf_coeffs <- map_dfr(data_grped, plot_rank_zipf) |>
   select(region, estimate, upper, lower, year, gender)
 ccdf_coeffs <- map_dfr(data_grped, plot_ccdf) |> 
   select(region, estimate, upper, lower, year, gender)
+  
 
-zipf_coeffs |> 
-  knitr::kable()
-
-ccdf_coeffs |> 
-  knitr::kable()
-
+xtable(ccdf_coeffs,type = "latex")
 ```
- 
+
+    % latex table generated in R 4.2.1 by xtable 1.8-4 package
+    % Fri Sep 23 20:03:56 2022
+    \begin{table}[ht]
+    \centering
+    \begin{tabular}{rlrrrll}
+      \hline
+     & region & estimate & upper & lower & year & gender \\ 
+      \hline
+    1 & Region One & -0.46 & -0.46 & -0.46 & 1952 & boys \\ 
+      2 & Region Two & -0.08 & -0.06 & -0.10 & 1952 & boys \\ 
+      3 & Region One & -0.42 & -0.42 & -0.42 & 1952 & girls \\ 
+      4 & Region Two & 0.11 & 0.13 & 0.08 & 1952 & girls \\ 
+      5 & Region One & -0.33 & -0.33 & -0.33 & 2002 & boys \\ 
+      6 & Region Two & 0.40 & 0.49 & 0.32 & 2002 & boys \\ 
+      7 & Region One & -0.22 & -0.22 & -0.22 & 2002 & girls \\ 
+      8 & Region Two & 0.74 & 0.82 & 0.65 & 2002 & girls \\ 
+       \hline
+    \end{tabular}
+    \end{table}
+
+``` r
+xtable(zipf_coeffs,type = "latex")
+```
+
+    % latex table generated in R 4.2.1 by xtable 1.8-4 package
+    % Fri Sep 23 20:03:56 2022
+    \begin{table}[ht]
+    \centering
+    \begin{tabular}{rlrrrll}
+      \hline
+     & region & estimate & upper & lower & year & gender \\ 
+      \hline
+    1 & Region One & 0.70 & 0.79 & 0.62 & 1952 & boys \\ 
+      2 & Region Two & 1.76 & 1.77 & 1.76 & 1952 & boys \\ 
+      3 & Region One & 0.58 & 0.62 & 0.53 & 1952 & girls \\ 
+      4 & Region Two & 1.63 & 1.64 & 1.63 & 1952 & girls \\ 
+      5 & Region One & 0.27 & 0.30 & 0.24 & 2002 & boys \\ 
+      6 & Region Two & 1.41 & 1.41 & 1.41 & 2002 & boys \\ 
+      7 & Region One & 0.34 & 0.37 & 0.31 & 2002 & girls \\ 
+      8 & Region Two & 1.32 & 1.32 & 1.32 & 2002 & girls \\ 
+       \hline
+    \end{tabular}
+    \end{table}
+
+``` r
+raw_data |> 
+ # filter(year == "1952", gender == "boys") |> 
+  group_by(year, gender) |> 
+  count(count) |> 
+  rename(k = count, Nk = n) |> 
+  ggplot(aes(log10(k), log10(Nk))) + geom_point() + facet_wrap(year ~ gender)
+```
+
+![](homework_week4_files/figure-gfm/unnamed-chunk-6-1.png)
