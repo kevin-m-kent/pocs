@@ -1,0 +1,48 @@
+---
+title: "Week 4 Homework"
+format:
+   gfm:
+     html-math-method: webtex
+editor: visual
+execute: 
+  message: false
+  warning: false
+---
+
+## Baby Name Frequencies
+
+```{r}
+#| layout-ncol: 2
+library(tidyverse)
+
+all_gender_files <- list.files(here::here("Week_4", "Data", "data"), pattern = "[0-9].txt")
+
+read_gender_data <- function(filename) {
+  
+  read_csv(here::here("Week_4", "Data", "data", filename), 
+                                           col_names = c("name", "gender", "count"),
+           col_types = cols(col_character(), col_character(), col_number())) |> 
+    mutate(file = filename)
+  
+}
+
+all_gender_data_raw <- map_dfr(all_gender_files, read_gender_data) |> 
+  mutate(year = str_extract(file, "[0-9]+") |> as.numeric()) 
+
+names_choose <- c("Lindsay", "Shirley", "Madison", "Desmond", "Aiden")
+
+all_gender_data_ranked <- all_gender_data_raw |> 
+  group_by(gender, year) |> 
+  mutate(rank = rank(-count))
+
+
+all_gender_data_ranked |> 
+  filter(name %in% names_choose) |> 
+  ggplot(aes(year, log10(rank), col = name)) + geom_line() + 
+  facet_wrap(gender ~ ., scales = "free_y",
+                                                                 ncol = 1)
+
+
+
+```
+ 

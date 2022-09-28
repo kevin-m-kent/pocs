@@ -224,62 +224,34 @@ zipf_coeffs <- map_dfr(data_grped, plot_rank_zipf) |>
   select(region, estimate, upper, lower, year, gender)
 ccdf_coeffs <- map_dfr(data_grped, plot_ccdf) |> 
   select(region, estimate, upper, lower, year, gender)
-  
 
-xtable(ccdf_coeffs,type = "latex")
+zipf_coeffs |> 
+  knitr::kable()
 ```
 
-    % latex table generated in R 4.2.1 by xtable 1.8-4 package
-    % Fri Sep 23 20:03:56 2022
-    \begin{table}[ht]
-    \centering
-    \begin{tabular}{rlrrrll}
-      \hline
-     & region & estimate & upper & lower & year & gender \\ 
-      \hline
-    1 & Region One & -0.46 & -0.46 & -0.46 & 1952 & boys \\ 
-      2 & Region Two & -0.08 & -0.06 & -0.10 & 1952 & boys \\ 
-      3 & Region One & -0.42 & -0.42 & -0.42 & 1952 & girls \\ 
-      4 & Region Two & 0.11 & 0.13 & 0.08 & 1952 & girls \\ 
-      5 & Region One & -0.33 & -0.33 & -0.33 & 2002 & boys \\ 
-      6 & Region Two & 0.40 & 0.49 & 0.32 & 2002 & boys \\ 
-      7 & Region One & -0.22 & -0.22 & -0.22 & 2002 & girls \\ 
-      8 & Region Two & 0.74 & 0.82 & 0.65 & 2002 & girls \\ 
-       \hline
-    \end{tabular}
-    \end{table}
+| region     |  estimate |     upper |     lower | year | gender |
+|:-----------|----------:|----------:|----------:|:-----|:-------|
+| Region One | 0.7038853 | 0.7914676 | 0.6163030 | 1952 | boys   |
+| Region Two | 1.7630912 | 1.7656842 | 1.7604982 | 1952 | boys   |
+| Region One | 0.5771275 | 0.6203544 | 0.5339006 | 1952 | girls  |
+| Region Two | 1.6339228 | 1.6359472 | 1.6318984 | 1952 | girls  |
+| Region One | 0.2737634 | 0.3028946 | 0.2446321 | 2002 | boys   |
+| Region Two | 1.4138164 | 1.4148989 | 1.4127340 | 2002 | boys   |
+| Region One | 0.3375795 | 0.3694233 | 0.3057356 | 2002 | girls  |
+| Region Two | 1.3179060 | 1.3187308 | 1.3170811 | 2002 | girls  |
 
 ``` r
-xtable(zipf_coeffs,type = "latex")
+ccdf_coeffs |> 
+  knitr::kable()
 ```
 
-    % latex table generated in R 4.2.1 by xtable 1.8-4 package
-    % Fri Sep 23 20:03:56 2022
-    \begin{table}[ht]
-    \centering
-    \begin{tabular}{rlrrrll}
-      \hline
-     & region & estimate & upper & lower & year & gender \\ 
-      \hline
-    1 & Region One & 0.70 & 0.79 & 0.62 & 1952 & boys \\ 
-      2 & Region Two & 1.76 & 1.77 & 1.76 & 1952 & boys \\ 
-      3 & Region One & 0.58 & 0.62 & 0.53 & 1952 & girls \\ 
-      4 & Region Two & 1.63 & 1.64 & 1.63 & 1952 & girls \\ 
-      5 & Region One & 0.27 & 0.30 & 0.24 & 2002 & boys \\ 
-      6 & Region Two & 1.41 & 1.41 & 1.41 & 2002 & boys \\ 
-      7 & Region One & 0.34 & 0.37 & 0.31 & 2002 & girls \\ 
-      8 & Region Two & 1.32 & 1.32 & 1.32 & 2002 & girls \\ 
-       \hline
-    \end{tabular}
-    \end{table}
-
-``` r
-raw_data |> 
- # filter(year == "1952", gender == "boys") |> 
-  group_by(year, gender) |> 
-  count(count) |> 
-  rename(k = count, Nk = n) |> 
-  ggplot(aes(log10(k), log10(Nk))) + geom_point() + facet_wrap(year ~ gender)
-```
-
-![](homework_week4_files/figure-gfm/unnamed-chunk-6-1.png)
+| region     |   estimate |      upper |      lower | year | gender |
+|:-----------|-----------:|-----------:|-----------:|:-----|:-------|
+| Region One | -0.4599035 | -0.4579577 | -0.4618493 | 1952 | boys   |
+| Region Two | -0.0778850 | -0.0566977 | -0.0990723 | 1952 | boys   |
+| Region One | -0.4171513 | -0.4157152 | -0.4185875 | 1952 | girls  |
+| Region Two |  0.1058002 |  0.1306012 |  0.0809992 | 1952 | girls  |
+| Region One | -0.3299202 | -0.3282268 | -0.3316136 | 2002 | boys   |
+| Region Two |  0.4045817 |  0.4940651 |  0.3150983 | 2002 | boys   |
+| Region One | -0.2208327 | -0.2182819 | -0.2233835 | 2002 | girls  |
+| Region Two |  0.7371321 |  0.8217887 |  0.6524755 | 2002 | girls  |
