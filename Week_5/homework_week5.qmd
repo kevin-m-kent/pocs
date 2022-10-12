@@ -38,9 +38,14 @@ all_gender_data_ranked <- all_gender_data_raw |>
 
 all_gender_data_ranked |> 
   filter(name %in% names_choose) |> 
+  mutate(gender = case_when(gender == "M" ~ "Male",
+                            TRUE ~ "Female")) |> 
   ggplot(aes(year, log10(rank), col = name)) + geom_line() + 
+  scale_y_reverse() +
   facet_wrap(gender ~ ., scales = "free_y",
-                                                                 ncol = 1)
+                                                                 ncol = 1) +
+  theme_light() +
+  labs(title = "Baby Name Rank by Year")
 
 
 
