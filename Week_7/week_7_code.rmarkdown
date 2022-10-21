@@ -1,0 +1,69 @@
+---
+title: "Week 6"
+format:
+   gfm:
+     html-math-method: webtex
+editor: visual
+---
+
+
+## PDF for kMax
+
+For γ = 5/2, generate n = 1000 sets each of N = 10, 102, 103, 104, 105, and 106
+samples, using Pk = ck−5/2 with k = 1, 2, 3, . . .
+How do we computationally sample from a discrete probability distribution?
+
+
+
+
+```{r}
+
+library(purrr)
+library(tidyverse)
+
+n_reruns <- 1000
+
+K_func <- function(u) {
+  
+  (1- u)^-2/3
+  
+}
+
+
+sample_and_max <- function(n_samples) {
+  
+  unif_sample <- runif(n_samples)
+  
+  map(unif_sample, K_func) |> unlist() |> max()
+  
+}
+
+n_samples <- c(10, 10^2, 10^3, 10^4, 10^5, 10^6)
+
+results <- map(n_samples, ~ purrr::rerun(n_reruns, sample_and_max(.)))
+
+names(results) <- n_samples
+
+results_df <- map_dfr(results, ~ tibble(idx = 1:n_reruns, maxes = unlist(.)), .id = "n_samples")
+
+
+results_df |> 
+  ggplot(aes(idx, log10(maxes))) + geom_point()  + facet_wrap(n_samples ~ ., 
+                                                      "free_y")
+
+results_df |> 
+  write_csv(here::here("Week_7", "Data", "simulated_k_func.csv"))
+
+averaged_k <- results_df |> 
+  group_by(n_samples) |> 
+  summarise(mean_max = mean(maxes)) |> 
+  mutate(n_samples = as.numeric(n_samples)) 
+
+averaged_k |> 
+  ggplot(aes(log10(n_samples), log10(mean_max))) + geom_point()
+
+lm(log10(mean_max) ~ log10(n_samples), data = averaged_k) |> 
+  broom::tidy() |> 
+  mutate(upper_est = estimate + 1.96*std.error, lower_est = estimate - 1.96*std.error)
+```
+

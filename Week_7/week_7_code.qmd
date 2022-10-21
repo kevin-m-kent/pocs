@@ -1,6 +1,8 @@
 ---
 title: "Week 6"
-format: html
+format:
+   gfm:
+     html-math-method: webtex
 editor: visual
 ---
 
@@ -21,16 +23,16 @@ n_reruns <- 1000
 
 K_func <- function(u) {
   
-  (1- u)^-2/3
+  (1- u)^(-2/3)
   
 }
 
 
-sample_and_max <- function(n_samples) {
+sample_and_max <- function(samp_size) {
   
-  unif_sample <- runif(n_samples)
+  unif_sample <- runif(samp_size)
   
-  map(unif_sample, K_func) |> unlist() |> max()
+  K_func(unif_sample) |> max() |> round()
   
 }
 
@@ -44,7 +46,7 @@ results_df <- map_dfr(results, ~ tibble(idx = 1:n_reruns, maxes = unlist(.)), .i
 
 
 results_df |> 
-  ggplot(aes(idx, log10(maxes))) + geom_point()  + facet_wrap(n_samples ~ ., 
+  ggplot(aes(idx, maxes)) + geom_line()  + facet_wrap(n_samples ~ ., 
                                                       "free_y")
 
 results_df |> 
@@ -55,6 +57,9 @@ averaged_k <- results_df |>
   summarise(mean_max = mean(maxes)) |> 
   mutate(n_samples = as.numeric(n_samples)) 
 
+averaged_k |> 
+  ggplot(aes(n_samples, mean_max)) + geom_point()
+  
 averaged_k |> 
   ggplot(aes(log10(n_samples), log10(mean_max))) + geom_point()
 

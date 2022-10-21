@@ -1,0 +1,151 @@
+---
+title: "Week 6"
+format:
+   gfm:
+     html-math-method: webtex
+editor: visual
+---
+
+## PDF for kMax
+
+For γ = 5/2, generate n = 1000 sets each of N = 10, 102, 103, 104, 105, and 106
+samples, using Pk = ck−5/2 with k = 1, 2, 3, . . .
+How do we computationally sample from a discrete probability distribution?
+
+```{r}
+
+library(purrr)
+library(tidyverse)
+
+n_reruns <- 1000
+gamma <- -2
+
+K_func <- function(u, gamma) {
+  
+  (1- u)^(gamma)
+  
+}
+
+
+sample_and_max <- function(samp_size, gamma) {
+  
+  unif_sample <- runif(samp_size)
+  
+  K_func(unif_sample, gamma) |> max() |> round()
+  
+}
+
+n_samples <- c(10, 10^2, 10^3, 10^4, 10^5, 10^6)
+
+results <- map(n_samples, ~ purrr::rerun(n_reruns, sample_and_max(., gamma)))
+
+names(results) <- n_samples
+
+results_df <- map_dfr(results, ~ tibble(idx = 1:n_reruns, maxes = unlist(.)), .id = "n_samples") |> 
+  mutate(n_samples = as.numeric(n_samples))
+
+write_csv(results_df, here::here("Week_8", "Data", "simulated_k_func_gamma2.csv"))
+
+#results_df <- read_csv(here::here("Week_7", "Data", "simulated_k_func.csv"))
+
+results_df |> 
+  ggplot(aes(idx, maxes)) + geom_line()  + facet_wrap(n_samples ~ ., 
+                                                      "free_y") + theme_minimal() +
+  labs(title = "Kmax by Simulation R for each N sample size",
+       subtitle = "Each sample size was run through 1000 iterations")
+
+ggsave(here::here("Week_8", "n_by_N_gamma2.png"))
+
+averaged_k <- results_df |> 
+  group_by(n_samples) |> 
+  summarise(mean_max = mean(maxes)) |> 
+  mutate(n_samples = as.numeric(n_samples)) 
+
+averaged_k |> 
+  ggplot(aes(n_samples, mean_max)) + geom_point()
+  
+averaged_k |> 
+  ggplot(aes(log10(n_samples), log10(mean_max))) + geom_point() + theme_minimal() +
+  labs(title = "Mean Kmax by Sample Size",
+       subtitle = "Log10 Transformed on Both Axes")
+
+ggsave(here::here("Week_8", "kmean_by_N_gamma2.png"))
+
+lm(log10(mean_max) ~ log10(n_samples), data = averaged_k) |> 
+  broom::tidy() |> 
+  mutate(upper_est = estimate + 1.96*std.error, lower_est = estimate - 1.96*std.error)
+```
+
+## 1-d lattice
+
+Consider an infinite 1-d lattice forest with a tree present at any site with
+probability p.
+(a) Find the distribution of forest sizes as a function of p. Do this by moving
+along the 1-d world and figuring out the probability that any forest you enter
+will extend for a total length ℓ.
+3
+(b) Find pc, the critical probability for which a giant component exists.
+Hint: One way to find critical points is to determine when certain average
+quantities explode. Compute ⟨l⟩ and find p such that this expression goes
+boom (if it does)
+
+```{r}
+
+library(furrr)
+library(tidyverse)
+plan(multisession, workers = availableCores())
+
+probs <- seq(0, 1, .01) 
+probs <- probs[2:(length(probs)-1)]
+
+forest_size <- 1000
+
+make_forest_sequence_distr <- function(prob, size) {
+  
+ forest_seq <- sample(c(0, 1), size = size, prob = c(1-prob, prob), replace = TRUE)
+ 
+ forest_seq_df <- data.frame(forest_seq = forest_seq) |> 
+   mutate(id = cumsum(forest_seq != dplyr::lag(forest_seq, default = 1))) |> 
+   group_by(id) |> 
+   summarise(n = n(), type = max(forest_seq)) |> 
+   filter(type == 1)
+ 
+ forest_seq_df |> 
+   mutate(prob = prob) |> 
+   select(-type, -id)
+ 
+
+}
+
+test <- map_dfr(probs, ~ rerun(100, make_forest_sequence_distr(., forest_size)))
+
+rank_size <- test |> 
+  group_by(prob) |> 
+  mutate(rank = rank(-n)) |> 
+  group_nest() |> 
+  rowwise() |> 
+  mutate(coeffs = list(lm(log10(n) ~ log10(rank), data = data) |> broom::tidy())) |> 
+  select(-data) |> 
+  unnest(coeffs)
+
+rank_size |> 
+  filter(term == "log10(rank)") |> 
+  ggplot(aes(prob, estimate)) + geom_point()
+
+avg_prob <- test |> 
+  group_by(prob) |> 
+  summarise(n = mean(n))
+
+avg_prob |> 
+  ggplot(aes(prob, n)) + geom_point()
+```
+
+
+```{r}
+library(arrow)
+
+percolation_2k <- read_parquet(here::here("Week_8", "2d_percolation.2k"))
+
+
+```
+
