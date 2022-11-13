@@ -218,4 +218,3 @@ ccdf_coeffs |>
   knitr::kable()
 
 ```
- 

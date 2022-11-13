@@ -6,15 +6,9 @@ format:
 editor: visual
 ---
 
-
 ## PDF for kMax
 
-For γ = 5/2, generate n = 1000 sets each of N = 10, 102, 103, 104, 105, and 106
-samples, using Pk = ck−5/2 with k = 1, 2, 3, . . .
-How do we computationally sample from a discrete probability distribution?
-
-
-
+For γ = 5/2, generate n = 1000 sets each of N = 10, 102, 103, 104, 105, and 106 samples, using Pk = ck−5/2 with k = 1, 2, 3, . . . How do we computationally sample from a discrete probability distribution?
 
 ```{r}
 
@@ -66,4 +60,3 @@ lm(log10(mean_max) ~ log10(n_samples), data = averaged_k) |>
   broom::tidy() |> 
   mutate(upper_est = estimate + 1.96*std.error, lower_est = estimate - 1.96*std.error)
 ```
-

@@ -46,7 +46,7 @@ results_df <- map_dfr(results, ~ tibble(idx = 1:n_reruns, maxes = unlist(.)), .i
 
 write_csv(results_df, here::here("Week_8", "Data", "simulated_k_func_gamma2.csv"))
 
-#results_df <- read_csv(here::here("Week_7", "Data", "simulated_k_func.csv"))
+results_df <- read_csv(here::here("Week_7", "Data", "simulated_k_func.csv"))
 
 results_df |> 
   ggplot(aes(idx, maxes)) + geom_line()  + facet_wrap(n_samples ~ ., 
@@ -135,9 +135,11 @@ rank_size |>
 avg_prob <- test |> 
   group_by(prob) |> 
   summarise(n = mean(n))
-
+5
 avg_prob |> 
-  ggplot(aes(prob, n)) + geom_point()
+  ggplot(aes(prob, n)) + geom_point() + theme_minimal() + labs(title = "Average Forest size for a given tree probability (p)")
+
+ggsave(here::here("Week_8", "1d_tree_size_average.png"))
 ```
 
 

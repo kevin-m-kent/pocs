@@ -48,6 +48,7 @@ all_gender_data_ranked |>
   labs(title = "Baby Name Rank by Year")
 
 
+ggsave(here::here("Week_5", "Plots", "baby_name_rank_year.png"))
 
 ```
  
